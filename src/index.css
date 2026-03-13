@@ -1,7 +1,6 @@
 @import "tailwindcss";
 
-/* Fontshare - Premium typography */
-@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700,900&f[]=cabinet-grotesk@400,500,700,800&f[]=jet-brains-mono@400&display=swap');
+/* Fonts loaded via <link> in index.html to avoid @import ordering issues with Tailwind CSS 4 */
 
 @theme {
   --color-navy: #000046;
@@ -19,32 +18,35 @@
   --font-display: 'Cabinet Grotesk', sans-serif;
   --font-body: 'Satoshi', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --font-serif: 'Roboto Slab', serif;
+  --font-roboto: 'Roboto', sans-serif;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/*
+  All custom styles MUST be inside @layer base so they don't
+  override Tailwind utility classes (px-6, py-24, gap-8, etc.).
+  In CSS Cascade Layers, un-layered styles beat layered styles.
+*/
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  body {
+    font-family: var(--font-body);
+    color: var(--color-navy);
+    background: var(--color-bg-light);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  font-family: var(--font-body);
-  color: var(--color-navy);
-  background: var(--color-bg-light);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    line-height: 1.2;
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-display);
-  line-height: 1.2;
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg-light); }
+  ::-webkit-scrollbar-thumb { background: #c4c4c4; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-navy); }
 }
-
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--color-bg-light); }
-::-webkit-scrollbar-thumb { background: #c4c4c4; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-navy); }

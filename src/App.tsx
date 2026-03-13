@@ -9,6 +9,7 @@ import Funds from './pages/Funds';
 import Prospects from './pages/Prospects';
 import Compliance from './pages/Compliance';
 import Devis from './pages/Devis';
+import LandingPage from './pages/LandingPage';
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, staleTime: 30000 } },
@@ -24,6 +25,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/devis" element={<Devis />} />
           <Route
