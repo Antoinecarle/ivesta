@@ -19,6 +19,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import IntroAnimation from '../components/animations/IntroAnimation';
 gsap.registerPlugin(ScrollTrigger);
 
 function cn(...inputs: ClassValue[]) {
@@ -45,11 +46,10 @@ function Button({
   return (
     <button
       className={cn(
-        'px-8 py-4 transition-all duration-300 font-medium text-[11px] tracking-[2px] uppercase flex items-center justify-center gap-4 cursor-pointer',
+        'px-8 py-4 rounded-xl transition-all duration-300 font-medium text-[11px] tracking-[2px] uppercase flex items-center justify-center gap-4 cursor-pointer',
         variants[variant],
         className
       )}
-      style={{ borderRadius: '0px' }}
       {...props}
     >
       {children}
@@ -203,6 +203,8 @@ export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [formData, setFormData] = useState({ prenom: '', nom: '', email: '', tel: '', message: '' });
+  const [showIntro, setShowIntro] = useState(true);
+  const [introComplete, setIntroComplete] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
@@ -254,6 +256,7 @@ export default function LandingPage() {
 
   // Main GSAP scroll animations
   useGSAP(() => {
+    if (!introComplete) return;
     // Hero entrance timeline
     if (heroRef.current) {
       const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
@@ -374,7 +377,7 @@ export default function LandingPage() {
         }
       );
     }
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [introComplete] });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -383,11 +386,20 @@ export default function LandingPage() {
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen bg-[#F7F7F9] text-[#000046] selection:bg-[#FF8217] selection:text-white"
-      style={{ fontFamily: bodyFontFamily }}
-    >
+    <>
+      {showIntro && (
+        <IntroAnimation
+          onRevealStart={() => setIntroComplete(true)}
+          onComplete={() => {
+            setShowIntro(false);
+          }}
+        />
+      )}
+      <div
+        ref={containerRef}
+        className="min-h-screen bg-[#F7F7F9] text-[#000046] selection:bg-[#FF8217] selection:text-white"
+        style={{ fontFamily: bodyFontFamily }}
+      >
       {/* ══════════════ FLOATING BANNER ══════════════ */}
       <AnnouncementBanner />
 
@@ -400,7 +412,7 @@ export default function LandingPage() {
       >
         <div className="max-w-[1140px] mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="bg-[#000046] w-10 h-10 flex items-center justify-center transition-colors group-hover:bg-[#FF8217]">
+            <div className="bg-[#000046] w-10 h-10 rounded-lg flex items-center justify-center transition-colors group-hover:bg-[#FF8217]">
               <span className="text-white font-bold text-xl" style={{ fontFamily: headingFont }}>
                 iV
               </span>
@@ -430,7 +442,7 @@ export default function LandingPage() {
                 {link.dropdown && activeDropdown === link.name && (
                   <div
                     ref={(el) => { if (el) dropdownRefs.current.set(link.name, el); }}
-                    className="absolute top-full left-0 bg-white border-t-2 border-[#FF8217] shadow-xl p-6 min-w-[220px] flex flex-col gap-4"
+                    className="absolute top-full left-0 bg-white border-t-2 border-[#FF8217] shadow-xl rounded-xl p-6 min-w-[220px] flex flex-col gap-4"
                     style={{ opacity: 0 }}
                   >
                     {link.dropdown.map((item) => (
@@ -480,9 +492,9 @@ export default function LandingPage() {
       <main>
         {/* ══════════════ 2. HERO ══════════════ */}
         <section ref={heroRef} className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-[#F7F7F9]">
-          <div className="hero-shape absolute top-[20%] right-[-5%] w-[400px] h-[400px] bg-[#FAEBDC] rotate-12 -z-0" />
-          <div className="hero-shape absolute bottom-[10%] left-[-2%] w-[300px] h-[300px] bg-[#000046] opacity-5 -z-0" />
-          <div className="hero-shape absolute top-[10%] left-[40%] w-20 h-20 bg-[#FF8217] rotate-45 opacity-20" />
+          <div className="hero-shape absolute top-[20%] right-[-5%] w-[400px] h-[400px] bg-[#FAEBDC] rounded-[3rem] rotate-12 -z-0" />
+          <div className="hero-shape absolute bottom-[10%] left-[-2%] w-[300px] h-[300px] bg-[#000046] rounded-[3rem] opacity-5 -z-0" />
+          <div className="hero-shape absolute top-[10%] left-[40%] w-20 h-20 bg-[#FF8217] rounded-2xl rotate-45 opacity-20" />
 
           <div className="max-w-[1140px] mx-auto px-6 relative z-10 w-full">
             <div className="max-w-3xl">
@@ -523,7 +535,7 @@ export default function LandingPage() {
         </section>
 
         {/* ══════════════ 3. STATS BAR ══════════════ */}
-        <section ref={statsRef} className="bg-[#000046] py-20 relative overflow-hidden">
+        <section ref={statsRef} className="bg-[#000046] py-20 relative overflow-hidden rounded-[2rem] mx-4 lg:mx-8 my-4">
           <div className="max-w-[1140px] mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
             {[
               { val: '60+', label: 'Familles accompagnées' },
@@ -545,9 +557,9 @@ export default function LandingPage() {
         <section ref={manifesteRef} id="manifeste" className="py-24 bg-white">
           <div className="max-w-[1140px] mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
             <div className="manifeste-quote relative" style={{ opacity: 0 }}>
-              <div className="bg-[#FAEBDC] p-12 lg:p-16 relative">
-                <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-[#FF8217]" />
-                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-[#FF8217]" />
+              <div className="bg-[#FAEBDC] p-12 lg:p-16 rounded-2xl relative">
+                <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-[#FF8217] rounded-tr-xl" />
+                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-[#FF8217] rounded-bl-xl" />
                 <blockquote
                   className="text-2xl md:text-3xl italic leading-relaxed text-[#000046]"
                   style={{ fontFamily: headingFont }}
@@ -592,7 +604,7 @@ export default function LandingPage() {
                 { n: '03', t: 'Responsable', d: "L'intégration systématique des enjeux ESG dans nos stratégies d'investissement." },
                 { n: '04', t: 'Direct', d: "Un interlocuteur dédié, accessible et réactif pour une gestion fluide au quotidien." },
               ].map((v) => (
-                <div key={v.n} className="valeur-card bg-white p-8 border-t-4 border-[#FF8217] shadow-sm hover:shadow-md transition-shadow" style={{ opacity: 0 }}>
+                <div key={v.n} className="valeur-card bg-white p-8 rounded-2xl border-t-4 border-[#FF8217] shadow-sm hover:shadow-md transition-shadow" style={{ opacity: 0 }}>
                   <span className="text-[#FF8217] font-bold text-lg block mb-4" style={{ fontFamily: headingFont }}>
                     {v.n}
                   </span>
@@ -634,9 +646,9 @@ export default function LandingPage() {
         <section ref={offreRef} id="offre" className="py-24 bg-[#F7F7F9]">
           <div className="max-w-[1140px] mx-auto px-6">
             <SectionHeading label="NOTRE EXPERTISE" title="Un accompagnement global" font={headingFont} />
-            <div className="grid md:grid-cols-2 gap-0">
+            <div className="grid md:grid-cols-2 gap-4">
               {SERVICES.map((s, i) => (
-                <div key={i} className={cn('offre-card relative h-[400px] p-12 flex flex-col justify-between group overflow-hidden', s.bg)} style={{ opacity: 0 }}>
+                <div key={i} className={cn('offre-card relative h-[400px] p-12 rounded-2xl flex flex-col justify-between group overflow-hidden', s.bg)} style={{ opacity: 0 }}>
                   <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                   <div>
                     <div className="mb-8">{s.icon}</div>
@@ -671,7 +683,7 @@ export default function LandingPage() {
                   <div className="relative mb-6">
                     <div
                       className={cn(
-                        'aspect-[3/4] flex items-center justify-center text-4xl font-light',
+                        'aspect-[3/4] rounded-2xl flex items-center justify-center text-4xl font-light',
                         i % 2 === 0 ? 'bg-[#FAEBDC]' : 'bg-[#E3F1EC]'
                       )}
                       style={{ fontFamily: headingFont }}
@@ -680,11 +692,11 @@ export default function LandingPage() {
                     </div>
                     <div
                       className={cn(
-                        'absolute inset-0 border-white transition-all duration-500',
+                        'absolute inset-0 rounded-2xl border-white transition-all duration-500',
                         i % 2 === 0 ? 'border-r-[15px] group-hover:border-r-0' : 'border-l-[15px] group-hover:border-l-0'
                       )}
                     />
-                    <div className="absolute bottom-4 right-4 bg-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute bottom-4 right-4 bg-white rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Linkedin className="w-5 h-5 text-[#FF8217]" />
                     </div>
                   </div>
@@ -702,7 +714,7 @@ export default function LandingPage() {
               </span>
               <div className="flex flex-wrap gap-3 justify-center">
                 {['Wealth Planning', 'Financial Markets', 'Private Markets', 'Operations', 'Compliance'].map((tag) => (
-                  <span key={tag} className="px-4 py-2 bg-[#F7F7F9] text-[10px] tracking-widest uppercase font-medium">
+                  <span key={tag} className="px-4 py-2 bg-[#F7F7F9] rounded-full text-[10px] tracking-widest uppercase font-medium">
                     {tag}
                   </span>
                 ))}
@@ -748,7 +760,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="contact-form bg-white/5 p-10 backdrop-blur-sm" style={{ opacity: 0 }}>
+            <div className="contact-form bg-white/5 p-10 rounded-2xl backdrop-blur-sm" style={{ opacity: 0 }}>
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-8">
                   <input
@@ -800,7 +812,7 @@ export default function LandingPage() {
         </section>
 
         {/* ══════════════ 10. CARRIÈRE ══════════════ */}
-        <section ref={carriereRef} className="py-16 bg-[#FAEBDC]">
+        <section ref={carriereRef} className="py-16 bg-[#FAEBDC] rounded-[2rem] mx-4 lg:mx-8 my-4">
           <div className="max-w-[1140px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
             <h3 className="text-3xl font-normal text-[#000046]" style={{ fontFamily: headingFont }}>
               Rejoignez notre aventure entrepreneuriale
@@ -818,7 +830,7 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-4 gap-16 mb-20">
             <div className="footer-col col-span-1" style={{ opacity: 0 }}>
               <div className="flex items-center gap-3 mb-8">
-                <div className="bg-white w-8 h-8 flex items-center justify-center">
+                <div className="bg-white w-8 h-8 rounded-lg flex items-center justify-center">
                   <span className="text-[#000046] font-bold text-sm">iV</span>
                 </div>
                 <span className="text-xl text-white font-normal" style={{ fontFamily: headingFont }}>
@@ -890,5 +902,6 @@ export default function LandingPage() {
         </div>
       </footer>
     </div>
+    </>
   );
 }

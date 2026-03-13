@@ -10,6 +10,10 @@ import Prospects from './pages/Prospects';
 import Compliance from './pages/Compliance';
 import Reporting from './pages/Reporting';
 import FundNews from './pages/FundNews';
+import ClientDetail from './pages/ClientDetail';
+import Markets from './pages/Markets';
+import AIAssistant from './pages/AIAssistant';
+import ClientPortal from './pages/ClientPortal';
 import Devis from './pages/Devis';
 import LandingPage from './pages/LandingPage';
 
@@ -43,6 +47,10 @@ export default function App() {
                     <Route path="/prospects" element={<Prospects />} />
                     <Route path="/compliance" element={<Compliance />} />
                     <Route path="/fund-news" element={<FundNews />} />
+                    <Route path="/client-detail" element={<ClientDetail />} />
+                    <Route path="/markets" element={<Markets />} />
+                    <Route path="/ai-assistant" element={<AIAssistant />} />
+                    <Route path="/client-portal" element={<ClientPortal />} />
                   </Routes>
                 </Layout>
               </ProtectedRoute>

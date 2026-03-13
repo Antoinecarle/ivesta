@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, TrendingUp, Target, Shield, LogOut, BarChart3, Bell, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, TrendingUp, Target, Shield, LogOut, BarChart3, Bell, Settings, UserCheck, Globe, Bot, Eye } from 'lucide-react';
 import { getUser, clearAuth } from '../lib/auth';
 
 const nav = [
@@ -10,6 +10,10 @@ const nav = [
   { path: '/prospects', label: 'Prospection', icon: Target },
   { path: '/compliance', label: 'Compliance', icon: Shield },
   { path: '/fund-news', label: 'Fund News', icon: Bell },
+  { path: '/client-detail', label: 'Fiche Client', icon: UserCheck },
+  { path: '/markets', label: 'Marches & Veille', icon: Globe },
+  { path: '/ai-assistant', label: 'Assistant IA', icon: Bot },
+  { path: '/client-portal', label: 'Espace Client', icon: Eye },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {

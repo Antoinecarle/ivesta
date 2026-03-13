@@ -1,0 +1,274 @@
+/* ═══════════════════════════════════════════════════════
+   IntroAnimation — iVesta Brand Arcs Reveal
+   ═══════════════════════════════════════════════════════ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background-color: #000046;
+  overflow: hidden;
+}
+
+/* ─── Skip Button ─── */
+
+.skipButton {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 20;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'Sailec', 'Inter', sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 20px;
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.skipButton:hover {
+  color: #FF8217;
+  border-color: rgba(255, 130, 23, 0.4);
+}
+
+/* ─── Arcs Container ─── */
+
+.arcsContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* ─── Base Arc ─── */
+
+.arc {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%;
+  /* transform managed by GSAP (xPercent, yPercent, scale, x) */
+}
+
+/* ─── Individual Arcs — matching brand visual ─── */
+
+.arcRed {
+  width: 160vh;
+  height: 160vh;
+  background: #CD002D;
+  left: -15vw;
+  z-index: 1;
+}
+
+.arcOrange {
+  width: 150vh;
+  height: 150vh;
+  background: #FF8217;
+  left: 2vw;
+  z-index: 2;
+}
+
+.arcMint {
+  width: 130vh;
+  height: 130vh;
+  background: #E8F0EB;
+  left: 30vw;
+  z-index: 3;
+}
+
+.arcNavy {
+  width: 160vh;
+  height: 160vh;
+  background: #000046;
+  left: 62vw;
+  z-index: 4;
+}
+
+.arcRose {
+  width: 100vh;
+  height: 100vh;
+  background: #FFB9AD;
+  left: 96vw;
+  z-index: 1;
+}
+
+/* ─── Text: IVESTA FAMILY OFFICE ─── */
+
+.textIvesta {
+  position: absolute;
+  left: 22vw;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+
+.textIvestaLine {
+  font-family: 'Sailec', 'Inter', sans-serif;
+  font-size: clamp(18px, 2.5vw, 36px);
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #000046;
+  line-height: 1.4;
+  opacity: 0;
+}
+
+/* ─── Text: LE CHOIX D'ÊTRE LIBRE ─── */
+
+.textSlogan {
+  position: absolute;
+  left: 55vw;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+
+.textSloganLine {
+  font-family: 'Moret', 'Georgia', serif;
+  font-size: clamp(32px, 5.5vw, 90px);
+  font-weight: 400;
+  color: white;
+  line-height: 1.05;
+  text-transform: uppercase;
+  opacity: 0;
+}
+
+/* ─── B Corp Badge ─── */
+
+.bCorpBadge {
+  position: absolute;
+  right: 3vw;
+  bottom: 3vh;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+}
+
+.bCorpLabel {
+  font-family: 'Sailec', 'Inter', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: #000046;
+}
+
+.bCorpIcon {
+  width: 44px;
+  height: 44px;
+  border: 2px solid #000046;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Moret', 'Georgia', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #000046;
+}
+
+/* ─── Flash ─── */
+
+.flashOverlay {
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .textIvesta {
+    left: 15vw;
+  }
+  .textSlogan {
+    left: 50vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .arcRed { width: 100vw; height: 100vw; left: -40vw; }
+  .arcOrange { width: 90vw; height: 90vw; left: -20vw; }
+  .arcMint { width: 85vw; height: 85vw; left: 15vw; }
+  .arcNavy { width: 100vw; height: 100vw; left: 50vw; }
+  .arcRose { width: 60vw; height: 60vw; left: 90vw; }
+
+  .textIvesta {
+    left: 50%;
+    top: 28%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    text-align: center;
+  }
+
+  .textIvestaLine {
+    font-size: clamp(14px, 4vw, 24px);
+  }
+
+  .textSlogan {
+    left: 50%;
+    top: 62%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    text-align: center;
+  }
+
+  .textSloganLine {
+    font-size: clamp(28px, 10vw, 50px);
+  }
+
+  .skipButton {
+    top: 1rem;
+    right: 1rem;
+    font-size: 10px;
+    padding: 6px 16px;
+    color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .bCorpBadge {
+    right: 5vw;
+    bottom: 4vh;
+  }
+  .bCorpIcon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    border-color: white;
+    color: white;
+  }
+  .bCorpLabel {
+    font-size: 8px;
+    color: white;
+  }
+}
+
+@media (max-width: 480px) {
+  .textIvestaLine {
+    font-size: clamp(12px, 4.5vw, 18px);
+  }
+  .textSloganLine {
+    font-size: clamp(24px, 11vw, 40px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .arc {
+    transition: none !important;
+  }
+}
