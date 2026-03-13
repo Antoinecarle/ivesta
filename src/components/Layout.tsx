@@ -1,29 +1,65 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, TrendingUp, Target, Shield, LogOut, BarChart3, Bell, Settings, UserCheck, Globe, Bot, Eye } from 'lucide-react';
+import { LayoutDashboard, Users, TrendingUp, Target, Shield, LogOut, BarChart3, Bell, UserCheck, Globe, Bot, Eye, ChevronDown } from 'lucide-react';
 import { getUser, clearAuth } from '../lib/auth';
 
-const nav = [
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/families', label: 'Familles', icon: Users },
-  { path: '/funds', label: 'Private Markets', icon: TrendingUp },
-  { path: '/reporting', label: 'Reporting', icon: BarChart3 },
-  { path: '/prospects', label: 'Prospection', icon: Target },
-  { path: '/compliance', label: 'Compliance', icon: Shield },
-  { path: '/fund-news', label: 'Fund News', icon: Bell },
-  { path: '/client-detail', label: 'Fiche Client', icon: UserCheck },
-  { path: '/markets', label: 'Marches & Veille', icon: Globe },
-  { path: '/ai-assistant', label: 'Assistant IA', icon: Bot },
-  { path: '/client-portal', label: 'Espace Client', icon: Eye },
+const navGroups = [
+  {
+    label: null,
+    items: [
+      { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: 'Clients',
+    items: [
+      { path: '/families', label: 'Familles', icon: Users },
+      { path: '/client-detail', label: 'Fiche Client', icon: UserCheck },
+      { path: '/prospects', label: 'Prospection', icon: Target },
+    ],
+  },
+  {
+    label: 'Investissements',
+    items: [
+      { path: '/funds', label: 'Private Markets', icon: TrendingUp },
+      { path: '/markets', label: 'Marches & Veille', icon: Globe },
+      { path: '/fund-news', label: 'Fund News', icon: Bell },
+    ],
+  },
+  {
+    label: 'Operations',
+    items: [
+      { path: '/reporting', label: 'Reporting', icon: BarChart3 },
+      { path: '/compliance', label: 'Compliance', icon: Shield },
+    ],
+  },
+  {
+    label: 'Outils',
+    items: [
+      { path: '/ai-assistant', label: 'Assistant IA', icon: Bot },
+      { path: '/client-portal', label: 'Espace Client', icon: Eye },
+    ],
+  },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const user = getUser();
+  const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
   function logout() {
     clearAuth();
     navigate('/login');
+  }
+
+  function toggleGroup(label: string) {
+    setCollapsedGroups((prev) => {
+      const next = new Set(prev);
+      if (next.has(label)) next.delete(label);
+      else next.add(label);
+      return next;
+    });
   }
 
   return (
@@ -42,36 +78,46 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        <nav className="flex-1 py-4">
-          {nav.map(({ path, label, icon: Icon }) => {
-            const active = location.pathname === path;
+        <nav className="flex-1 py-3 overflow-y-auto">
+          {navGroups.map((group) => {
+            const isCollapsed = group.label ? collapsedGroups.has(group.label) : false;
+            const hasActiveItem = group.items.some((item) => location.pathname === item.path);
             return (
-              <Link
-                key={path}
-                to={path}
-                className={`flex items-center gap-3 px-6 py-3 text-sm font-medium transition-all ${
-                  active
-                    ? 'bg-orange/15 text-orange border-r-2 border-orange'
-                    : 'text-white/70 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <Icon size={18} />
-                {label}
-              </Link>
+              <div key={group.label || 'main'} className="mb-1">
+                {group.label && (
+                  <button
+                    onClick={() => toggleGroup(group.label!)}
+                    className="w-full flex items-center justify-between px-6 py-2 mt-2 cursor-pointer"
+                  >
+                    <span className={`text-[10px] font-bold uppercase tracking-[2px] ${hasActiveItem ? 'text-orange/80' : 'text-white/30'}`}>
+                      {group.label}
+                    </span>
+                    <ChevronDown
+                      size={12}
+                      className={`text-white/30 transition-transform duration-200 ${isCollapsed ? '-rotate-90' : ''}`}
+                    />
+                  </button>
+                )}
+                {!isCollapsed && group.items.map(({ path, label, icon: Icon }) => {
+                  const active = location.pathname === path;
+                  return (
+                    <Link
+                      key={path}
+                      to={path}
+                      className={`flex items-center gap-3 px-6 py-2.5 text-[13px] font-medium transition-all ${
+                        active
+                          ? 'bg-orange/15 text-orange border-r-2 border-orange'
+                          : 'text-white/70 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <Icon size={16} />
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
             );
           })}
-          <div className="my-2 mx-6 border-t border-white/10" />
-          <Link
-            to="/settings"
-            className={`flex items-center gap-3 px-6 py-3 text-sm font-medium transition-all ${
-              location.pathname === '/settings'
-                ? 'bg-orange/15 text-orange border-r-2 border-orange'
-                : 'text-white/70 hover:text-white hover:bg-white/5'
-            }`}
-          >
-            <Settings size={18} />
-            Parametres
-          </Link>
         </nav>
 
         <div className="p-4 border-t border-white/10">

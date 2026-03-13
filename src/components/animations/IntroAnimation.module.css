@@ -8,6 +8,7 @@
   z-index: 10000;
   background-color: #000046;
   overflow: hidden;
+  cursor: pointer;
 }
 
 /* ─── Skip Button ─── */

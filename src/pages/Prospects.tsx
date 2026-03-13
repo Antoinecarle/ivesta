@@ -119,7 +119,7 @@ function ProspectCard({ prospect }: { prospect: Prospect }) {
   const priorityColor = prospect.priority === 'high' ? 'bg-red' : prospect.priority === 'medium' ? 'bg-orange' : 'bg-[#CBD5E1]';
 
   return (
-    <div className="bg-white border border-[#E5E7EB] p-4 mb-3 group hover:border-navy transition-colors cursor-pointer">
+    <div className="bg-white border border-[#E5E7EB] p-4 mb-3 group hover:border-navy hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2">
           <div className={`w-1.5 h-1.5 ${priorityColor}`} />

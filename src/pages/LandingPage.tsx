@@ -18,9 +18,9 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { clsx, type ClassValue } from 'clsx';
+gsap.registerPlugin(ScrollTrigger);
 import { twMerge } from 'tailwind-merge';
 import IntroAnimation from '../components/animations/IntroAnimation';
-gsap.registerPlugin(ScrollTrigger);
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -254,9 +254,10 @@ export default function LandingPage() {
     });
   }, [activeDropdown]);
 
-  // Main GSAP scroll animations
+  // Hero entrance + scroll-triggered section reveals
   useGSAP(() => {
     if (!introComplete) return;
+
     // Hero entrance timeline
     if (heroRef.current) {
       const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
@@ -268,115 +269,48 @@ export default function LandingPage() {
         .fromTo(heroRef.current.querySelectorAll('.hero-shape'), { scale: 0, rotation: -20 }, { scale: 1, rotation: 0, duration: 1, stagger: 0.15, ease: 'elastic.out(1, 0.5)' }, '-=1');
     }
 
-    // Stats counter animation
-    if (statsRef.current) {
-      gsap.fromTo(
-        statsRef.current.querySelectorAll('.stat-item'),
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1, y: 0, duration: 0.6, stagger: 0.15, ease: 'power2.out',
-          scrollTrigger: { trigger: statsRef.current, start: 'top 80%', toggleActions: 'play none none none' },
+    // Scroll-triggered reveals for all below-fold sections
+    const revealSections = [
+      { ref: statsRef, selector: '.stat-item', stagger: true },
+      { ref: manifesteRef, selectors: ['.manifeste-quote', '.manifeste-text'] },
+      { ref: valeursRef, selector: '.valeur-card', stagger: true },
+      { ref: engagementRef, selectors: ['.engagement-title'], selector: '.engagement-stat', stagger: true },
+      { ref: offreRef, selector: '.offre-card', stagger: true },
+      { ref: equipeRef, selector: '.team-member', stagger: true },
+      { ref: contactRef, selectors: ['.contact-info', '.contact-form'] },
+      { ref: carriereRef, children: true },
+      { ref: footerRef, selector: '.footer-col', stagger: true },
+    ];
+
+    revealSections.forEach(({ ref, selector, selectors, stagger, children }) => {
+      if (!ref.current) return;
+      const trigger = { trigger: ref.current, start: 'top 80%', toggleActions: 'play none none none' as const };
+
+      if (selectors) {
+        const tl = gsap.timeline({ scrollTrigger: trigger });
+        selectors.forEach((sel, i) => {
+          const el = ref.current!.querySelector(sel);
+          if (el) tl.fromTo(el, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, i * 0.2);
+        });
+        // Also handle stagger selector if both are provided (engagement)
+        if (selector) {
+          const els = ref.current!.querySelectorAll(selector);
+          if (els.length) tl.fromTo(els, { opacity: 0, y: 30, scale: 0.95 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.12, ease: 'back.out(1.4)' }, '-=0.3');
         }
-      );
-    }
-
-    // Manifeste section
-    if (manifesteRef.current) {
-      const mTl = gsap.timeline({
-        scrollTrigger: { trigger: manifesteRef.current, start: 'top 75%', toggleActions: 'play none none none' },
-      });
-      mTl
-        .fromTo(manifesteRef.current.querySelector('.manifeste-quote'), { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out' })
-        .fromTo(manifesteRef.current.querySelector('.manifeste-text'), { opacity: 0, x: 60 }, { opacity: 1, x: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5');
-    }
-
-    // Valeurs cards stagger
-    if (valeursRef.current) {
-      gsap.fromTo(
-        valeursRef.current.querySelectorAll('.valeur-card'),
-        { opacity: 0, y: 50, scale: 0.95 },
-        {
-          opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.12, ease: 'power2.out',
-          scrollTrigger: { trigger: valeursRef.current, start: 'top 80%', toggleActions: 'play none none none' },
-        }
-      );
-    }
-
-    // Engagement section
-    if (engagementRef.current) {
-      const eTl = gsap.timeline({
-        scrollTrigger: { trigger: engagementRef.current, start: 'top 75%', toggleActions: 'play none none none' },
-      });
-      eTl
-        .fromTo(engagementRef.current.querySelector('.engagement-title'), { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' })
-        .fromTo(engagementRef.current.querySelectorAll('.engagement-stat'), { opacity: 0, y: 30, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.15, ease: 'back.out(1.4)' }, '-=0.3');
-    }
-
-    // Offre cards
-    if (offreRef.current) {
-      gsap.fromTo(
-        offreRef.current.querySelectorAll('.offre-card'),
-        { opacity: 0, y: 60 },
-        {
-          opacity: 1, y: 0, duration: 0.7, stagger: 0.15, ease: 'power2.out',
-          scrollTrigger: { trigger: offreRef.current, start: 'top 80%', toggleActions: 'play none none none' },
-        }
-      );
-    }
-
-    // Team members stagger
-    if (equipeRef.current) {
-      gsap.fromTo(
-        equipeRef.current.querySelectorAll('.team-member'),
-        { opacity: 0, y: 50, scale: 0.95 },
-        {
-          opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.12, ease: 'power2.out',
-          scrollTrigger: { trigger: equipeRef.current, start: 'top 80%', toggleActions: 'play none none none' },
-        }
-      );
-      gsap.fromTo(
-        equipeRef.current.querySelector('.team-bottom'),
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
-          scrollTrigger: { trigger: equipeRef.current.querySelector('.team-bottom'), start: 'top 90%', toggleActions: 'play none none none' },
-        }
-      );
-    }
-
-    // Contact section
-    if (contactRef.current) {
-      const cTl = gsap.timeline({
-        scrollTrigger: { trigger: contactRef.current, start: 'top 75%', toggleActions: 'play none none none' },
-      });
-      cTl
-        .fromTo(contactRef.current.querySelector('.contact-info'), { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' })
-        .fromTo(contactRef.current.querySelector('.contact-form'), { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 0.7, ease: 'power3.out' }, '-=0.4');
-    }
-
-    // Carriere section
-    if (carriereRef.current) {
-      gsap.fromTo(
-        carriereRef.current.children,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.6, ease: 'power2.out',
-          scrollTrigger: { trigger: carriereRef.current, start: 'top 85%', toggleActions: 'play none none none' },
-        }
-      );
-    }
-
-    // Footer columns stagger
-    if (footerRef.current) {
-      gsap.fromTo(
-        footerRef.current.querySelectorAll('.footer-col'),
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out',
-          scrollTrigger: { trigger: footerRef.current, start: 'top 85%', toggleActions: 'play none none none' },
-        }
-      );
-    }
+      } else if (selector && stagger) {
+        gsap.fromTo(
+          ref.current!.querySelectorAll(selector),
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: 'power2.out', scrollTrigger: trigger }
+        );
+      } else if (children) {
+        gsap.fromTo(
+          ref.current!.children,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', scrollTrigger: trigger }
+        );
+      }
+    });
   }, { scope: containerRef, dependencies: [introComplete] });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -708,7 +642,7 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div className="team-bottom flex flex-col md:flex-row items-center justify-between border-t border-gray-100 pt-12 gap-8" style={{ opacity: 0 }}>
+            <div className="team-bottom flex flex-col md:flex-row items-center justify-between border-t border-gray-100 pt-12 gap-8">
               <span className="text-2xl font-normal" style={{ fontFamily: headingFont }}>
                 Plus de 50 collaborateurs
               </span>

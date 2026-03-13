@@ -74,9 +74,14 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="text-center text-white/30 text-xs mt-8">
-          Ivesta Family Office &copy; 2026 &mdash; Plateforme confidentielle
-        </p>
+        <div className="text-center mt-8 space-y-3">
+          <a href="/landing" className="text-white/50 hover:text-orange text-xs transition-colors">
+            Retour au site
+          </a>
+          <p className="text-white/30 text-xs">
+            Ivesta Family Office &copy; 2026 &mdash; Plateforme confidentielle
+          </p>
+        </div>
       </div>
     </div>
   );

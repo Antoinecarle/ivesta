@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import gsap from 'gsap';
 import {
   Users,
   TrendingUp,
@@ -99,7 +101,7 @@ function Badge({ children, variant = 'default' }: { children: React.ReactNode; v
 
 function KPICard({ label, value, trend, trendType, icon: Icon, progress }: any) {
   return (
-    <div className="bg-white border border-[#E5E7EB] p-5 flex flex-col justify-between hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] transition-all h-full">
+    <div className="kpi-card bg-white border border-[#E5E7EB] p-5 flex flex-col justify-between hover:shadow-[0_4px_16px_rgba(0,0,70,0.10)] hover:-translate-y-0.5 transition-all duration-200 h-full" style={{ opacity: 0 }}>
       <div className="flex justify-between items-start mb-4">
         <div className="p-2 bg-[#F7F7F9]">
           <Icon size={18} className="text-orange" />
@@ -134,8 +136,24 @@ function CardTitle({ title }: { title: string }) {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const pageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!pageRef.current) return;
+    const ctx = gsap.context(() => {
+      // Stagger KPI cards
+      gsap.fromTo('.kpi-card', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, stagger: 0.06, ease: 'power2.out', delay: 0.1 });
+      // Fade in chart sections
+      gsap.fromTo('.chart-section', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.35 });
+      // Fade in bottom cards
+      gsap.fromTo('.bottom-card', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out', delay: 0.55 });
+    }, pageRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div>
+    <div ref={pageRef}>
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-navy text-[42px] font-normal font-display leading-tight">Tableau de bord</h1>
@@ -151,7 +169,7 @@ export default function Dashboard() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white border border-[#E5E7EB] p-6">
+        <div className="chart-section bg-white border border-[#E5E7EB] p-6 hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] transition-all duration-200" style={{ opacity: 0 }}>
           <CardTitle title="Allocation par strategie" />
           <div className="h-[300px] w-full flex">
             <ResponsiveContainer width="60%" height="100%">
@@ -176,7 +194,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="bg-white border border-[#E5E7EB] p-6">
+        <div className="chart-section bg-white border border-[#E5E7EB] p-6 hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] transition-all duration-200" style={{ opacity: 0 }}>
           <CardTitle title="Evolution AUM (Mds EUR)" />
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -195,7 +213,7 @@ export default function Dashboard() {
       {/* Lower Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Pipeline Commercial */}
-        <div className="bg-white border border-[#E5E7EB] p-6 flex flex-col">
+        <div className="bottom-card bg-white border border-[#E5E7EB] p-6 flex flex-col hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] transition-all duration-200" style={{ opacity: 0 }}>
           <CardTitle title="Pipeline Commercial" />
           <div className="space-y-4 flex-1">
             {pipelineData.map((item, i) => (
@@ -213,13 +231,16 @@ export default function Dashboard() {
               </div>
             ))}
           </div>
-          <button className="mt-8 w-full border border-navy text-navy py-3 text-[13px] font-medium tracking-wider hover:bg-navy hover:text-white transition-colors cursor-pointer">
+          <button
+            onClick={() => navigate('/prospects')}
+            className="mt-8 w-full border border-navy text-navy py-3 text-[13px] font-medium tracking-wider hover:bg-navy hover:text-white transition-colors cursor-pointer"
+          >
             VOIR LE PIPELINE COMPLET
           </button>
         </div>
 
         {/* Alertes Compliance */}
-        <div className="bg-white border border-[#E5E7EB] p-6">
+        <div className="bottom-card bg-white border border-[#E5E7EB] p-6 hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] transition-all duration-200" style={{ opacity: 0 }}>
           <CardTitle title="Alertes Compliance" />
           <div className="space-y-1">
             {alertsData.map((alert) => (
@@ -235,7 +256,7 @@ export default function Dashboard() {
         </div>
 
         {/* Activite Recente */}
-        <div className="bg-white border border-[#E5E7EB] p-6">
+        <div className="bottom-card bg-white border border-[#E5E7EB] p-6 hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] transition-all duration-200" style={{ opacity: 0 }}>
           <CardTitle title="Activite Recente" />
           <div className="relative space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-[#E5E7EB]">
             {activityData.map((activity) => (

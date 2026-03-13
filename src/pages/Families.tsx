@@ -1,10 +1,22 @@
 import { useQuery } from '@tanstack/react-query';
 import { api, formatCurrency } from '../lib/api';
 import { Users, Plus, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import gsap from 'gsap';
 
 export default function Families() {
   const [search, setSearch] = useState('');
+  const pageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!pageRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.family-header', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+      gsap.fromTo('.family-search', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out', delay: 0.15 });
+      gsap.fromTo('.family-card', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, ease: 'power2.out', delay: 0.25 });
+    }, pageRef);
+    return () => ctx.revert();
+  }, []);
   const { data: families = [], isLoading } = useQuery({
     queryKey: ['families'],
     queryFn: () => api<any[]>('/families'),
@@ -16,8 +28,8 @@ export default function Families() {
   );
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
+    <div ref={pageRef}>
+      <div className="family-header flex items-center justify-between mb-8" style={{ opacity: 0 }}>
         <div>
           <h1 className="font-display text-3xl font-bold text-navy">Familles</h1>
           <p className="text-charcoal/60 mt-1">{families.length} familles enregistrees</p>
@@ -27,7 +39,7 @@ export default function Families() {
         </button>
       </div>
 
-      <div className="relative mb-6">
+      <div className="family-search relative mb-6" style={{ opacity: 0 }}>
         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-charcoal/30" />
         <input
           type="text"
@@ -39,11 +51,16 @@ export default function Families() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-20 text-charcoal/40">Chargement...</div>
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+          <div className="w-10 h-10 bg-navy flex items-center justify-center animate-pulse">
+            <span className="text-white font-display font-bold text-sm">iV</span>
+          </div>
+          <span className="text-charcoal/40 text-sm">Chargement des familles...</span>
+        </div>
       ) : (
         <div className="grid gap-4">
           {filtered.map((f: any) => (
-            <div key={f.id} className="bg-white border border-navy/5 p-5 flex items-center justify-between hover:border-orange/30 transition-colors">
+            <div key={f.id} className="family-card bg-white border border-navy/5 p-5 flex items-center justify-between hover:border-orange/30 hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] hover:-translate-y-0.5 transition-all duration-200 cursor-pointer" style={{ opacity: 0 }}>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-beige flex items-center justify-center">
                   <Users size={20} className="text-navy" />

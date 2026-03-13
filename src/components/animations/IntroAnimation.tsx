@@ -14,13 +14,16 @@ interface IntroAnimationProps {
 export default function IntroAnimation({ onComplete, onRevealStart }: IntroAnimationProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const skippedRef = useRef(false);
 
   const prefersReducedMotion =
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ─── Skip handler ─── */
+  /* ─── Skip handler (guarded against double-fire) ─── */
   const handleSkip = useCallback(() => {
+    if (skippedRef.current) return;
+    skippedRef.current = true;
     if (tlRef.current) tlRef.current.kill();
     onRevealStart?.();
     if (overlayRef.current) {
@@ -84,7 +87,7 @@ export default function IntroAnimation({ onComplete, onRevealStart }: IntroAnima
       const vw = window.innerWidth;
 
       // ═══════════════════════════════════════════════════════
-      // PHASE 1: ARC ENTRANCE (0 → 1.2s)
+      // PHASE 1: ARC ENTRANCE (0 → 2s)
       // Colored arcs sweep in from both sides, matching brand visual
       // ═══════════════════════════════════════════════════════
       tl.addLabel('arcs', 0);
@@ -93,7 +96,7 @@ export default function IntroAnimation({ onComplete, onRevealStart }: IntroAnima
       tl.fromTo(
         arcNavy,
         { xPercent: -50, yPercent: -50, x: vw * 0.3, scale: 0.4, opacity: 0 },
-        { x: 0, scale: 1, opacity: 1, duration: 1.1, ease: 'power3.out' },
+        { x: 0, scale: 1, opacity: 1, duration: 1.8, ease: 'power3.out' },
         'arcs',
       );
 
@@ -101,45 +104,45 @@ export default function IntroAnimation({ onComplete, onRevealStart }: IntroAnima
       tl.fromTo(
         arcMint,
         { xPercent: -50, yPercent: -50, scale: 0, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1, ease: 'back.out(1.1)' },
-        'arcs+=0.1',
+        { scale: 1, opacity: 1, duration: 1.7, ease: 'back.out(1.1)' },
+        'arcs+=0.15',
       );
 
       // Orange arc — sweeps from left
       tl.fromTo(
         arcOrange,
         { xPercent: -50, yPercent: -50, x: -vw * 0.2, scale: 0.5, opacity: 0 },
-        { x: 0, scale: 1, opacity: 1, duration: 1, ease: 'power3.out' },
-        'arcs+=0.15',
+        { x: 0, scale: 1, opacity: 1, duration: 1.7, ease: 'power3.out' },
+        'arcs+=0.25',
       );
 
       // Red arc — sweeps from far left
       tl.fromTo(
         arcRed,
         { xPercent: -50, yPercent: -50, x: -vw * 0.3, scale: 0.4, opacity: 0 },
-        { x: 0, scale: 1, opacity: 1, duration: 1, ease: 'power3.out' },
-        'arcs+=0.25',
+        { x: 0, scale: 1, opacity: 1, duration: 1.7, ease: 'power3.out' },
+        'arcs+=0.4',
       );
 
       // Rose arc — sweeps from far right
       tl.fromTo(
         arcRose,
         { xPercent: -50, yPercent: -50, x: vw * 0.15, scale: 0.5, opacity: 0 },
-        { x: 0, scale: 1, opacity: 1, duration: 0.9, ease: 'power3.out' },
-        'arcs+=0.3',
+        { x: 0, scale: 1, opacity: 1, duration: 1.5, ease: 'power3.out' },
+        'arcs+=0.5',
       );
 
       // ═══════════════════════════════════════════════════════
-      // PHASE 2: TEXT REVEALS (1.0 → 2.0s)
+      // PHASE 2: TEXT REVEALS (1.8 → 3.4s)
       // Brand text appears on the composition
       // ═══════════════════════════════════════════════════════
-      tl.addLabel('text', 1.0);
+      tl.addLabel('text', 1.8);
 
       // "IVESTA FAMILY OFFICE" — stagger on mint area
       tl.fromTo(
         ivestaLines,
         { opacity: 0, y: 25, x: -15 },
-        { opacity: 1, y: 0, x: 0, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
+        { opacity: 1, y: 0, x: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out' },
         'text',
       );
 
@@ -147,29 +150,29 @@ export default function IntroAnimation({ onComplete, onRevealStart }: IntroAnima
       tl.fromTo(
         sloganLines,
         { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power3.out' },
-        'text+=0.2',
+        { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: 'power3.out' },
+        'text+=0.35',
       );
 
       // B Corp badge
       tl.fromTo(
         bCorp,
         { opacity: 0, scale: 0.8 },
-        { opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.5)' },
-        'text+=0.7',
+        { opacity: 1, scale: 1, duration: 0.6, ease: 'back.out(1.5)' },
+        'text+=1.0',
       );
 
       // ═══════════════════════════════════════════════════════
-      // PHASE 3: HOLD (2.0 → 2.7s)
+      // PHASE 3: HOLD (3.4 → 4.4s)
       // Composition holds for the viewer
       // ═══════════════════════════════════════════════════════
-      tl.addLabel('hold', '+=0.3');
+      tl.addLabel('hold', '+=0.6');
 
       // ═══════════════════════════════════════════════════════
-      // PHASE 4: DRAMATIC REVEAL (2.7 → 3.5s)
+      // PHASE 4: DRAMATIC REVEAL (4.4 → 5.8s)
       // Composition zooms and dissolves to landing page
       // ═══════════════════════════════════════════════════════
-      tl.addLabel('reveal', '+=0.4');
+      tl.addLabel('reveal', '+=0.8');
 
       // Fire onRevealStart — hero animations begin behind the fading overlay
       tl.call(
@@ -184,26 +187,26 @@ export default function IntroAnimation({ onComplete, onRevealStart }: IntroAnima
       // Text fades first
       tl.to(
         [...Array.from(ivestaLines), ...Array.from(sloganLines), bCorp],
-        { opacity: 0, duration: 0.3, ease: 'power2.in' },
+        { opacity: 0, duration: 0.5, ease: 'power2.in' },
         'reveal',
       );
 
       // Arcs zoom out slightly
       tl.to(
         allArcs,
-        { scale: 1.08, duration: 0.6, ease: 'power2.in' },
+        { scale: 1.08, duration: 0.9, ease: 'power2.in' },
         'reveal',
       );
 
       // White flash
-      tl.to(flash, { opacity: 0.4, duration: 0.06 }, 'reveal+=0.35');
-      tl.to(flash, { opacity: 0, duration: 0.3, ease: 'power2.out' }, 'reveal+=0.41');
+      tl.to(flash, { opacity: 0.4, duration: 0.08 }, 'reveal+=0.5');
+      tl.to(flash, { opacity: 0, duration: 0.4, ease: 'power2.out' }, 'reveal+=0.58');
 
       // Overlay fades to reveal landing page
       tl.to(
         overlay,
-        { opacity: 0, duration: 0.5, ease: 'power2.inOut' },
-        'reveal+=0.3',
+        { opacity: 0, duration: 0.7, ease: 'power2.inOut' },
+        'reveal+=0.45',
       );
     }, overlay);
 
@@ -216,7 +219,7 @@ export default function IntroAnimation({ onComplete, onRevealStart }: IntroAnima
 
   /* ─── Render ─── */
   return (
-    <div ref={overlayRef} className={styles.overlay} aria-hidden="true">
+    <div ref={overlayRef} className={styles.overlay} aria-hidden="true" onClick={handleSkip}>
       {/* Skip Button */}
       <button
         onClick={handleSkip}
