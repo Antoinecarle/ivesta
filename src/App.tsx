@@ -8,6 +8,8 @@ import Families from './pages/Families';
 import Funds from './pages/Funds';
 import Prospects from './pages/Prospects';
 import Compliance from './pages/Compliance';
+import Reporting from './pages/Reporting';
+import FundNews from './pages/FundNews';
 import Devis from './pages/Devis';
 import LandingPage from './pages/LandingPage';
 
@@ -37,8 +39,10 @@ export default function App() {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/families" element={<Families />} />
                     <Route path="/funds" element={<Funds />} />
+                    <Route path="/reporting" element={<Reporting />} />
                     <Route path="/prospects" element={<Prospects />} />
                     <Route path="/compliance" element={<Compliance />} />
+                    <Route path="/fund-news" element={<FundNews />} />
                   </Routes>
                 </Layout>
               </ProtectedRoute>

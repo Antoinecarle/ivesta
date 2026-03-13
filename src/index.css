@@ -1,25 +1,83 @@
 @import "tailwindcss";
 
-/* Fonts loaded via <link> in index.html to avoid @import ordering issues with Tailwind CSS 4 */
+/* ═══════════ FONT FACES — iVesta Brand Fonts ═══════════ */
+
+@font-face {
+  font-family: 'Moret';
+  src: url('/fonts/Moret-Book.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sailec';
+  src: url('/fonts/Sailec-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sailec';
+  src: url('/fonts/Sailec-RegularItalic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sailec';
+  src: url('/fonts/Sailec-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sailec';
+  src: url('/fonts/Sailec-MediumItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sailec';
+  src: url('/fonts/Sailec-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sailec';
+  src: url('/fonts/Sailec-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ═══════════ TAILWIND THEME TOKENS ═══════════ */
 
 @theme {
   --color-navy: #000046;
   --color-navy-light: #0a0a5c;
-  --color-orange: #FF810A;
+  --color-orange: #FF8217;
   --color-orange-hover: #ff9a3a;
   --color-rose: #FFB9AD;
   --color-red: #CD002D;
   --color-beige: #FAEBDC;
   --color-mint: #E3F1EC;
+  --color-sage: #E3F1EC;
+  --color-salmon: #FFB9AD;
+  --color-cream: #FAEBDC;
   --color-charcoal: #231F20;
   --color-bg-light: #F7F7F9;
   --color-transition: #FFBC7D;
 
-  --font-display: 'Cabinet Grotesk', sans-serif;
-  --font-body: 'Satoshi', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-serif: 'Roboto Slab', serif;
-  --font-roboto: 'Roboto', sans-serif;
+  --font-display: 'Moret', 'Georgia', serif;
+  --font-body: 'Sailec', 'Inter', sans-serif;
 }
 
 /*

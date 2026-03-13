@@ -1,13 +1,15 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, TrendingUp, Target, Shield, LogOut, FileText } from 'lucide-react';
+import { LayoutDashboard, Users, TrendingUp, Target, Shield, LogOut, BarChart3, Bell, Settings } from 'lucide-react';
 import { getUser, clearAuth } from '../lib/auth';
 
 const nav = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/families', label: 'Familles', icon: Users },
-  { path: '/funds', label: 'Fonds', icon: TrendingUp },
+  { path: '/funds', label: 'Private Markets', icon: TrendingUp },
+  { path: '/reporting', label: 'Reporting', icon: BarChart3 },
   { path: '/prospects', label: 'Prospection', icon: Target },
   { path: '/compliance', label: 'Compliance', icon: Shield },
+  { path: '/fund-news', label: 'Fund News', icon: Bell },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -54,14 +56,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Link>
             );
           })}
-          <a
-            href="/devis"
-            target="_blank"
-            className="flex items-center gap-3 px-6 py-3 text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all"
+          <div className="my-2 mx-6 border-t border-white/10" />
+          <Link
+            to="/settings"
+            className={`flex items-center gap-3 px-6 py-3 text-sm font-medium transition-all ${
+              location.pathname === '/settings'
+                ? 'bg-orange/15 text-orange border-r-2 border-orange'
+                : 'text-white/70 hover:text-white hover:bg-white/5'
+            }`}
           >
-            <FileText size={18} />
-            Devis & Pricing
-          </a>
+            <Settings size={18} />
+            Parametres
+          </Link>
         </nav>
 
         <div className="p-4 border-t border-white/10">

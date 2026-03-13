@@ -7,3 +7,6 @@ dist-ssr
 .DS_Store
 .vscode
 .idea
+
+# AI chat uploads
+.uploads/
