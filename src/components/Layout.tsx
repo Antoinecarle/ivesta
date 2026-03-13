@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Users, TrendingUp, Target, Shield, LogOut, BarChart3, Bell, UserCheck, Globe, Bot, Eye, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Users, TrendingUp, Target, Shield, LogOut, BarChart3, Bell, UserCheck, Globe, Bot, Eye, ChevronDown, Calculator, Activity, ShieldCheck } from 'lucide-react';
 import { getUser, clearAuth } from '../lib/auth';
 
 const navGroups = [
@@ -31,6 +31,14 @@ const navGroups = [
     items: [
       { path: '/reporting', label: 'Reporting', icon: BarChart3 },
       { path: '/compliance', label: 'Compliance', icon: Shield },
+    ],
+  },
+  {
+    label: 'Moteurs',
+    items: [
+      { path: '/financial-engine', label: 'Calcul Financier', icon: Calculator },
+      { path: '/risk-simulation', label: 'Monte Carlo', icon: Activity },
+      { path: '/compliance-engine', label: 'Moteur KYC', icon: ShieldCheck },
     ],
   },
   {

@@ -14,6 +14,9 @@ import ClientDetail from './pages/ClientDetail';
 import Markets from './pages/Markets';
 import AIAssistant from './pages/AIAssistant';
 import ClientPortal from './pages/ClientPortal';
+import FinancialEngine from './pages/FinancialEngine';
+import RiskSimulation from './pages/RiskSimulation';
+import ComplianceEngine from './pages/ComplianceEngine';
 import Devis from './pages/Devis';
 import LandingPage from './pages/LandingPage';
 
@@ -51,6 +54,9 @@ export default function App() {
                     <Route path="/markets" element={<Markets />} />
                     <Route path="/ai-assistant" element={<AIAssistant />} />
                     <Route path="/client-portal" element={<ClientPortal />} />
+                    <Route path="/financial-engine" element={<FinancialEngine />} />
+                    <Route path="/risk-simulation" element={<RiskSimulation />} />
+                    <Route path="/compliance-engine" element={<ComplianceEngine />} />
                   </Routes>
                 </Layout>
               </ProtectedRoute>
