@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Calculator, TrendingUp, Target, AlertTriangle, Activity, BarChart3, Zap } from 'lucide-react';
+import { Calculator, TrendingUp, Target, AlertTriangle, Activity, BarChart3, Zap, Plus, Trash2 } from 'lucide-react';
 import {
   AreaChart, Area, LineChart, Line, ScatterChart, Scatter,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -167,6 +167,21 @@ export default function FinancialEngine() {
     setCashflows(prev => prev.map((cf, i) => i === index ? { ...cf, [field]: field === 'amount' ? parseFloat(value) || 0 : value } : cf));
   };
 
+  const addCashflow = (type: 'call' | 'dist') => {
+    const today = new Date().toISOString().split('T')[0];
+    const callCount = cashflows.filter(cf => cf.amount < 0).length;
+    const distCount = cashflows.filter(cf => cf.amount >= 0).length;
+    const newCf: Cashflow = type === 'call'
+      ? { date: today, amount: -1.0, label: `Capital Call #${callCount + 1}` }
+      : { date: today, amount: 1.0, label: `Distribution #${distCount + 1}` };
+    setCashflows(prev => [...prev, newCf]);
+  };
+
+  const removeCashflow = (index: number) => {
+    if (cashflows.length <= 2) return;
+    setCashflows(prev => prev.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -202,11 +217,12 @@ export default function FinancialEngine() {
                   <th className="text-left py-2 px-3 text-[11px] font-bold uppercase tracking-wider text-navy font-body">Date</th>
                   <th className="text-left py-2 px-3 text-[11px] font-bold uppercase tracking-wider text-navy font-body">Montant (M EUR)</th>
                   <th className="text-left py-2 px-3 text-[11px] font-bold uppercase tracking-wider text-navy font-body">Type</th>
+                  <th className="w-10"></th>
                 </tr>
               </thead>
               <tbody>
                 {cashflows.map((cf, i) => (
-                  <tr key={i} className="border-b border-[#E5E7EB]">
+                  <tr key={i} className="border-b border-[#E5E7EB] group">
                     <td className="py-2 px-3">
                       <input
                         type="date"
@@ -229,14 +245,38 @@ export default function FinancialEngine() {
                         {cf.amount < 0 ? 'CALL' : 'DIST'}
                       </span>
                     </td>
+                    <td className="py-2 px-1">
+                      <button
+                        onClick={() => removeCashflow(i)}
+                        className={`p-1 text-charcoal/30 hover:text-red transition-colors cursor-pointer ${cashflows.length <= 2 ? 'opacity-30 pointer-events-none' : 'opacity-0 group-hover:opacity-100'}`}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={() => addCashflow('call')}
+              className="flex-1 bg-[#FEE2E2] text-red py-2 px-4 font-body font-bold text-xs uppercase tracking-wider hover:bg-red hover:text-white transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <Plus size={14} />
+              Capital Call
+            </button>
+            <button
+              onClick={() => addCashflow('dist')}
+              className="flex-1 bg-sage text-[#16A34A] py-2 px-4 font-body font-bold text-xs uppercase tracking-wider hover:bg-[#16A34A] hover:text-white transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <Plus size={14} />
+              Distribution
+            </button>
+          </div>
           <button
             onClick={handleCalculate}
-            className="mt-4 w-full bg-navy text-white py-3 px-6 font-body font-bold text-sm uppercase tracking-wider hover:bg-orange transition-colors cursor-pointer flex items-center justify-center gap-2"
+            className="mt-2 w-full bg-navy text-white py-3 px-6 font-body font-bold text-sm uppercase tracking-wider hover:bg-orange transition-colors cursor-pointer flex items-center justify-center gap-2"
           >
             {isCalculating ? (
               <>
