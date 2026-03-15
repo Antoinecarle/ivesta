@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ChevronDown,
+  ChevronUp,
   Menu,
   X,
   Linkedin,
@@ -46,7 +47,7 @@ function Button({
   return (
     <button
       className={cn(
-        'px-8 py-4 rounded-xl transition-all duration-300 font-medium text-[11px] tracking-[2px] uppercase flex items-center justify-center gap-4 cursor-pointer',
+        'px-8 py-4 transition-all duration-300 font-medium text-[11px] tracking-[2px] uppercase flex items-center justify-center gap-4 cursor-pointer',
         variants[variant],
         className
       )}
@@ -69,6 +70,7 @@ function SectionHeading({ label, title, light = false, font }: { label?: string;
       >
         {title}
       </h2>
+      <div className={cn('w-16 h-[3px] mt-6', light ? 'bg-[#FF8217]' : 'bg-[#FF8217]')} />
     </div>
   );
 }
@@ -113,7 +115,7 @@ function AnnouncementBanner() {
   return (
     <div
       ref={bannerRef}
-      className="fixed top-3 left-1/2 z-[100] flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-2.5 bg-[#000046]/95 backdrop-blur-md border border-white/10 shadow-xl rounded-full max-w-[calc(100vw-2rem)] sm:max-w-none sm:min-w-max"
+      className="fixed top-3 left-1/2 z-[100] flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-2.5 bg-[#000046]/95 backdrop-blur-md border border-white/10 shadow-xl max-w-[calc(100vw-2rem)] sm:max-w-none sm:min-w-max"
       style={{ transform: 'translateX(-50%)', opacity: 0 }}
     >
       <div className="flex items-center justify-center text-[#FF8217] shrink-0">
@@ -138,9 +140,47 @@ function AnnouncementBanner() {
       >
         <X size={14} />
       </button>
-      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#FF8217]/5 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#FF8217]/5 via-transparent to-transparent pointer-events-none" />
     </div>
   );
+}
+
+/* ─── Animated Counter ─── */
+
+function AnimatedCounter({ value, suffix = '', prefix = '' }: { value: number; suffix?: string; prefix?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (hasAnimated.current) return;
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          const duration = 2000;
+          const start = performance.now();
+          const animate = (now: number) => {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.round(eased * value));
+            if (progress < 1) requestAnimationFrame(animate);
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [value]);
+
+  return <span ref={ref}>{prefix}{count}{suffix}</span>;
 }
 
 /* ─── Data ─── */
@@ -204,6 +244,7 @@ export default function LandingPage() {
   const [formData, setFormData] = useState({ prenom: '', nom: '', email: '', tel: '', message: '' });
   const [showIntro, setShowIntro] = useState(true);
   const [introComplete, setIntroComplete] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLElement>(null);
@@ -223,7 +264,10 @@ export default function LandingPage() {
   const bodyFontFamily = `'Sailec', 'Inter', sans-serif`;
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+      setShowBackToTop(window.scrollY > 600);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -345,7 +389,7 @@ export default function LandingPage() {
       >
         <div className="max-w-[1140px] mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="bg-[#000046] w-10 h-10 rounded-lg flex items-center justify-center transition-colors group-hover:bg-[#FF8217]">
+            <div className="bg-[#000046] w-10 h-10 flex items-center justify-center transition-colors group-hover:bg-[#FF8217]">
               <span className="text-white font-bold text-xl" style={{ fontFamily: headingFont }}>
                 iV
               </span>
@@ -375,7 +419,7 @@ export default function LandingPage() {
                 {link.dropdown && activeDropdown === link.name && (
                   <div
                     ref={(el) => { if (el) dropdownRefs.current.set(link.name, el); }}
-                    className="absolute top-full left-0 bg-white border-t-2 border-[#FF8217] shadow-xl rounded-xl p-6 min-w-[220px] flex flex-col gap-4"
+                    className="absolute top-full left-0 bg-white border-t-2 border-[#FF8217] shadow-xl p-6 min-w-[220px] flex flex-col gap-4"
                     style={{ opacity: 0 }}
                   >
                     {link.dropdown.map((item) => (
@@ -425,9 +469,11 @@ export default function LandingPage() {
       <main>
         {/* ══════════════ 2. HERO ══════════════ */}
         <section ref={heroRef} className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-[#F7F7F9]">
-          <div className="hero-shape absolute top-[20%] right-[-5%] w-[400px] h-[400px] bg-[#FAEBDC] rounded-[3rem] rotate-12 -z-0" />
-          <div className="hero-shape absolute bottom-[10%] left-[-2%] w-[300px] h-[300px] bg-[#000046] rounded-[3rem] opacity-5 -z-0" />
-          <div className="hero-shape absolute top-[10%] left-[40%] w-20 h-20 bg-[#FF8217] rounded-2xl rotate-45 opacity-20" />
+          <div className="hero-shape absolute top-[20%] right-[-5%] w-[400px] h-[400px] bg-[#FAEBDC] rotate-12 -z-0" />
+          <div className="hero-shape absolute bottom-[10%] left-[-2%] w-[300px] h-[300px] bg-[#000046] opacity-5 -z-0" />
+          <div className="hero-shape absolute top-[10%] left-[40%] w-20 h-20 bg-[#FF8217] rotate-45 opacity-20" />
+          <div className="hero-shape absolute bottom-[30%] right-[15%] w-3 h-3 bg-[#CD002D] rotate-12 opacity-40" />
+          <div className="hero-shape absolute top-[40%] right-[25%] w-1 h-24 bg-[#FF8217] opacity-15 rotate-[30deg]" />
 
           <div className="max-w-[1140px] mx-auto px-6 relative z-10 w-full">
             <div className="max-w-3xl">
@@ -468,17 +514,17 @@ export default function LandingPage() {
         </section>
 
         {/* ══════════════ 3. STATS BAR ══════════════ */}
-        <section ref={statsRef} className="bg-[#000046] py-20 relative overflow-hidden rounded-[2rem] mx-4 lg:mx-8 my-4">
+        <section ref={statsRef} className="bg-[#000046] py-20 relative overflow-hidden mx-4 lg:mx-8 my-4">
           <div className="max-w-[1140px] mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
             {[
-              { val: '60+', label: 'Familles accompagnées' },
-              { val: '3Md€', label: "d'actifs sous conseil" },
-              { val: '50+', label: 'Collaborateurs' },
-              { val: '2', label: 'Bureaux (Paris & Bruxelles)' },
+              { val: 60, suffix: '+', label: 'Familles accompagnées' },
+              { val: 3, suffix: 'Md€', label: "d'actifs sous conseil" },
+              { val: 50, suffix: '+', label: 'Collaborateurs' },
+              { val: 2, suffix: '', label: 'Bureaux (Paris & Bruxelles)' },
             ].map((stat, i) => (
               <div key={i} className="stat-item text-center lg:text-left" style={{ opacity: 0 }}>
                 <div className="text-[#FF8217] text-4xl md:text-5xl font-normal mb-2" style={{ fontFamily: headingFont }}>
-                  {stat.val}
+                  <AnimatedCounter value={stat.val} suffix={stat.suffix} />
                 </div>
                 <div className="text-white text-[13px] tracking-wider uppercase opacity-80">{stat.label}</div>
               </div>
@@ -490,9 +536,9 @@ export default function LandingPage() {
         <section ref={manifesteRef} id="manifeste" className="py-24 bg-white">
           <div className="max-w-[1140px] mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center">
             <div className="manifeste-quote relative" style={{ opacity: 0 }}>
-              <div className="bg-[#FAEBDC] p-12 lg:p-16 rounded-2xl relative">
-                <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-[#FF8217] rounded-tr-xl" />
-                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-[#FF8217] rounded-bl-xl" />
+              <div className="bg-[#FAEBDC] p-12 lg:p-16 relative">
+                <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-[#FF8217]" />
+                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-[#FF8217]" />
                 <blockquote
                   className="text-2xl md:text-3xl italic leading-relaxed text-[#000046]"
                   style={{ fontFamily: headingFont }}
@@ -537,7 +583,7 @@ export default function LandingPage() {
                 { n: '03', t: 'Responsable', d: "L'intégration systématique des enjeux ESG dans nos stratégies d'investissement." },
                 { n: '04', t: 'Direct', d: "Un interlocuteur dédié, accessible et réactif pour une gestion fluide au quotidien." },
               ].map((v) => (
-                <div key={v.n} className="valeur-card bg-white p-8 rounded-2xl border-t-4 border-[#FF8217] shadow-sm hover:shadow-md transition-shadow" style={{ opacity: 0 }}>
+                <div key={v.n} className="valeur-card bg-white p-8 border-t-4 border-[#FF8217] border border-[#E5E7EB] hover:shadow-[0_2px_8px_rgba(0,0,70,0.08)] transition-shadow" style={{ opacity: 0 }}>
                   <span className="text-[#FF8217] font-bold text-lg block mb-4" style={{ fontFamily: headingFont }}>
                     {v.n}
                   </span>
@@ -560,13 +606,13 @@ export default function LandingPage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {[
-                { val: '100%', label: 'Indépendant' },
-                { val: '0', label: "Conflit d'intérêts" },
-                { val: '360°', label: 'Vision patrimoniale' },
+                { val: 100, suffix: '%', label: 'Indépendant' },
+                { val: 0, suffix: '', label: "Conflit d'intérêts" },
+                { val: 360, suffix: '°', label: 'Vision patrimoniale' },
               ].map((item, i) => (
                 <div key={i} className="engagement-stat flex flex-col items-center" style={{ opacity: 0 }}>
                   <div className="text-[#FF8217] text-5xl mb-2 font-light" style={{ fontFamily: headingFont }}>
-                    {item.val}
+                    <AnimatedCounter value={item.val} suffix={item.suffix} />
                   </div>
                   <div className="text-[11px] tracking-[2px] uppercase font-bold text-[#000046]">{item.label}</div>
                 </div>
@@ -581,7 +627,7 @@ export default function LandingPage() {
             <SectionHeading label="NOTRE EXPERTISE" title="Un accompagnement global" font={headingFont} />
             <div className="grid md:grid-cols-2 gap-4">
               {SERVICES.map((s, i) => (
-                <div key={i} className={cn('offre-card relative min-h-[300px] md:min-h-[400px] p-8 md:p-12 rounded-2xl flex flex-col justify-between group overflow-hidden', s.bg)} style={{ opacity: 0 }}>
+                <div key={i} className={cn('offre-card relative min-h-[300px] md:min-h-[400px] p-8 md:p-12 flex flex-col justify-between group overflow-hidden hover:shadow-[0_4px_16px_rgba(0,0,70,0.12)] transition-shadow', s.bg)} style={{ opacity: 0 }}>
                   <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                   <div>
                     <div className="mb-8">{s.icon}</div>
@@ -616,7 +662,7 @@ export default function LandingPage() {
                   <div className="relative mb-6">
                     <div
                       className={cn(
-                        'aspect-[3/4] rounded-2xl flex items-center justify-center text-4xl font-light',
+                        'aspect-[3/4] flex items-center justify-center text-4xl font-light',
                         i % 2 === 0 ? 'bg-[#FAEBDC]' : 'bg-[#E3F1EC]'
                       )}
                       style={{ fontFamily: headingFont }}
@@ -625,11 +671,11 @@ export default function LandingPage() {
                     </div>
                     <div
                       className={cn(
-                        'absolute inset-0 rounded-2xl border-white transition-all duration-500',
+                        'absolute inset-0 border-white transition-all duration-500',
                         i % 2 === 0 ? 'border-r-[15px] group-hover:border-r-0' : 'border-l-[15px] group-hover:border-l-0'
                       )}
                     />
-                    <div className="absolute bottom-4 right-4 bg-white rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute bottom-4 right-4 bg-white p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <Linkedin className="w-5 h-5 text-[#FF8217]" />
                     </div>
                   </div>
@@ -647,7 +693,7 @@ export default function LandingPage() {
               </span>
               <div className="flex flex-wrap gap-3 justify-center">
                 {['Wealth Planning', 'Financial Markets', 'Private Markets', 'Operations', 'Compliance'].map((tag) => (
-                  <span key={tag} className="px-4 py-2 bg-[#F7F7F9] rounded-full text-[10px] tracking-widest uppercase font-medium">
+                  <span key={tag} className="px-4 py-2 bg-[#F7F7F9] text-[10px] tracking-widest uppercase font-medium">
                     {tag}
                   </span>
                 ))}
@@ -693,7 +739,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="contact-form bg-white/5 p-10 rounded-2xl backdrop-blur-sm" style={{ opacity: 0 }}>
+            <div className="contact-form bg-white/5 p-10 backdrop-blur-sm border border-white/10" style={{ opacity: 0 }}>
               <form onSubmit={handleSubmit} className="space-y-8">
                 <div className="grid md:grid-cols-2 gap-8">
                   <input
@@ -745,7 +791,7 @@ export default function LandingPage() {
         </section>
 
         {/* ══════════════ 10. CARRIÈRE ══════════════ */}
-        <section ref={carriereRef} className="py-16 bg-[#FAEBDC] rounded-[2rem] mx-4 lg:mx-8 my-4">
+        <section ref={carriereRef} className="py-16 bg-[#FAEBDC] mx-4 lg:mx-8 my-4">
           <div className="max-w-[1140px] mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-8">
             <h3 className="text-3xl font-normal text-[#000046]" style={{ fontFamily: headingFont }}>
               Rejoignez notre aventure entrepreneuriale
@@ -763,7 +809,7 @@ export default function LandingPage() {
           <div className="grid lg:grid-cols-4 gap-16 mb-20">
             <div className="footer-col col-span-1" style={{ opacity: 0 }}>
               <div className="flex items-center gap-3 mb-8">
-                <div className="bg-white w-8 h-8 rounded-lg flex items-center justify-center">
+                <div className="bg-white w-8 h-8 flex items-center justify-center">
                   <span className="text-[#000046] font-bold text-sm">iV</span>
                 </div>
                 <span className="text-xl text-white font-normal" style={{ fontFamily: headingFont }}>
@@ -834,6 +880,18 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* ══════════════ BACK TO TOP ══════════════ */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className={cn(
+          'fixed bottom-8 right-8 z-50 w-12 h-12 bg-[#000046] text-white flex items-center justify-center transition-all duration-300 hover:bg-[#FF8217] cursor-pointer shadow-[0_4px_16px_rgba(0,0,70,0.12)]',
+          showBackToTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+        )}
+        aria-label="Retour en haut"
+      >
+        <ChevronUp className="w-5 h-5" />
+      </button>
     </div>
     </>
   );
