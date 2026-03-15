@@ -113,28 +113,27 @@ function AnnouncementBanner() {
   return (
     <div
       ref={bannerRef}
-      className="fixed top-3 left-1/2 z-[100] flex items-center gap-4 px-5 py-2.5 bg-[#000046]/95 backdrop-blur-md border border-white/10 shadow-xl rounded-full min-w-max"
+      className="fixed top-3 left-1/2 z-[100] flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-2.5 bg-[#000046]/95 backdrop-blur-md border border-white/10 shadow-xl rounded-full max-w-[calc(100vw-2rem)] sm:max-w-none sm:min-w-max"
       style={{ transform: 'translateX(-50%)', opacity: 0 }}
     >
-      <div className="flex items-center justify-center text-[#FF8217]">
+      <div className="flex items-center justify-center text-[#FF8217] shrink-0">
         <Sparkles size={16} strokeWidth={2.5} />
       </div>
-      <div className="flex items-center gap-6">
-        <p className="text-[14px] font-medium text-white tracking-tight">
+      <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+        <p className="text-[12px] sm:text-[14px] font-medium text-white tracking-tight truncate sm:truncate-none">
           iVesta ouvre ses portes à Bruxelles
         </p>
         <a
           href="#contact"
-          className="group flex items-center gap-1.5 text-[11px] uppercase tracking-[2px] font-bold text-[#FF8217] transition-colors duration-300 hover:text-white"
+          className="group hidden sm:flex items-center gap-1.5 text-[11px] uppercase tracking-[2px] font-bold text-[#FF8217] transition-colors duration-300 hover:text-white shrink-0"
         >
           En savoir plus
           <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
         </a>
       </div>
-      <div className="w-[1px] h-4 bg-white/20 ml-2" />
       <button
         onClick={handleDismiss}
-        className="p-1 text-white/60 hover:text-white transition-colors duration-200 cursor-pointer"
+        className="p-1 text-white/60 hover:text-white transition-colors duration-200 cursor-pointer shrink-0"
         aria-label="Fermer l'annonce"
       >
         <X size={14} />
@@ -582,7 +581,7 @@ export default function LandingPage() {
             <SectionHeading label="NOTRE EXPERTISE" title="Un accompagnement global" font={headingFont} />
             <div className="grid md:grid-cols-2 gap-4">
               {SERVICES.map((s, i) => (
-                <div key={i} className={cn('offre-card relative h-[400px] p-12 rounded-2xl flex flex-col justify-between group overflow-hidden', s.bg)} style={{ opacity: 0 }}>
+                <div key={i} className={cn('offre-card relative min-h-[300px] md:min-h-[400px] p-8 md:p-12 rounded-2xl flex flex-col justify-between group overflow-hidden', s.bg)} style={{ opacity: 0 }}>
                   <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                   <div>
                     <div className="mb-8">{s.icon}</div>
@@ -821,7 +820,7 @@ export default function LandingPage() {
             <p className="text-white/40 text-[11px] tracking-wider uppercase">
               &copy; {new Date().getFullYear()} iVesta. Tous droits réservés.
             </p>
-            <div className="flex gap-8">
+            <div className="flex flex-wrap gap-4 sm:gap-8 justify-center md:justify-end">
               <a href="#" className="text-white/40 hover:text-white text-[11px] tracking-wider uppercase transition-colors">
                 Mentions légales
               </a>
