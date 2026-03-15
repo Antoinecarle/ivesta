@@ -13,10 +13,6 @@ const pool = new pg.Pool({
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
-pool.on('connect', (client) => {
-  client.query('SET search_path TO ivesta, public');
-});
-
 export const query = async (text, params) => {
   const client = await pool.connect();
   try {

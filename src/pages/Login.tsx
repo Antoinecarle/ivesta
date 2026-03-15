@@ -20,7 +20,7 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
       setAuth(data.token, data.user);
-      navigate('/');
+      navigate('/dashboard');
     } catch {
       setError('Identifiants invalides');
     } finally {
