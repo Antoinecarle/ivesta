@@ -98,23 +98,25 @@
 
 .textIvesta {
   position: absolute;
-  left: 22vw;
+  left: 62vw;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%);
   z-index: 5;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
 }
 
 .textIvestaLine {
   font-family: 'Sailec', 'Inter', sans-serif;
   font-size: clamp(18px, 2.5vw, 36px);
   font-weight: 500;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
   color: #FFFFFF;
-  text-shadow: 0 2px 16px rgba(0, 0, 70, 0.5);
-  line-height: 1.4;
+  text-shadow: 0 2px 20px rgba(0, 0, 70, 0.6);
+  line-height: 1;
   opacity: 0;
 }
 
@@ -122,7 +124,7 @@
 
 .textSlogan {
   position: absolute;
-  left: 55vw;
+  left: 20vw;
   top: 50%;
   transform: translateY(-50%);
   z-index: 5;
@@ -192,10 +194,10 @@
 
 @media (max-width: 1024px) {
   .textIvesta {
-    left: 15vw;
+    left: 60vw;
   }
   .textSlogan {
-    left: 50vw;
+    left: 12vw;
   }
 }
 
@@ -208,19 +210,21 @@
 
   .textIvesta {
     left: 50%;
-    top: 28%;
+    top: 30%;
     transform: translate(-50%, -50%);
     align-items: center;
     text-align: center;
+    gap: 0.4em;
   }
 
   .textIvestaLine {
     font-size: clamp(14px, 4vw, 24px);
+    letter-spacing: 0.2em;
   }
 
   .textSlogan {
     left: 50%;
-    top: 62%;
+    top: 65%;
     transform: translate(-50%, -50%);
     align-items: center;
     text-align: center;
