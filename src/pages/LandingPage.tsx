@@ -12,8 +12,6 @@ import {
   Home,
   ArrowDownCircle,
   MoveRight,
-  Sparkles,
-  ArrowRight,
 } from 'lucide-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -71,76 +69,6 @@ function SectionHeading({ label, title, light = false, font }: { label?: string;
         {title}
       </h2>
       <div className={cn('w-16 h-[3px] mt-6', light ? 'bg-[#FF8217]' : 'bg-[#FF8217]')} />
-    </div>
-  );
-}
-
-/* ─── Floating Banner ─── */
-
-function AnnouncementBanner() {
-  const [isVisible, setIsVisible] = useState(false);
-  const bannerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const isDismissed = sessionStorage.getItem('ivesta-announcement-dismissed');
-    if (!isDismissed) {
-      setIsVisible(true);
-    }
-  }, []);
-
-  useGSAP(() => {
-    if (isVisible && bannerRef.current) {
-      gsap.fromTo(
-        bannerRef.current,
-        { y: -100, opacity: 0, x: '-50%' },
-        { y: 0, opacity: 1, duration: 0.8, ease: 'power4.out', delay: 0.5 }
-      );
-    }
-  }, [isVisible]);
-
-  const handleDismiss = () => {
-    if (bannerRef.current) {
-      gsap.to(bannerRef.current, {
-        y: -100, opacity: 0, duration: 0.5, ease: 'power4.in',
-        onComplete: () => {
-          setIsVisible(false);
-          sessionStorage.setItem('ivesta-announcement-dismissed', 'true');
-        },
-      });
-    }
-  };
-
-  if (!isVisible) return null;
-
-  return (
-    <div
-      ref={bannerRef}
-      className="fixed top-3 left-1/2 z-[100] flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-2.5 bg-[#000046]/95 backdrop-blur-md border border-white/10 shadow-xl max-w-[calc(100vw-2rem)] sm:max-w-none sm:min-w-max"
-      style={{ transform: 'translateX(-50%)', opacity: 0 }}
-    >
-      <div className="flex items-center justify-center text-[#FF8217] shrink-0">
-        <Sparkles size={16} strokeWidth={2.5} />
-      </div>
-      <div className="flex items-center gap-3 sm:gap-6 min-w-0">
-        <p className="text-[12px] sm:text-[14px] font-medium text-white tracking-tight truncate sm:truncate-none">
-          iVesta ouvre ses portes à Bruxelles
-        </p>
-        <a
-          href="#contact"
-          className="group hidden sm:flex items-center gap-1.5 text-[11px] uppercase tracking-[2px] font-bold text-[#FF8217] transition-colors duration-300 hover:text-white shrink-0"
-        >
-          En savoir plus
-          <ArrowRight size={12} className="transition-transform duration-300 group-hover:translate-x-1" />
-        </a>
-      </div>
-      <button
-        onClick={handleDismiss}
-        className="p-1 text-white/60 hover:text-white transition-colors duration-200 cursor-pointer shrink-0"
-        aria-label="Fermer l'annonce"
-      >
-        <X size={14} />
-      </button>
-      <div className="absolute inset-0 bg-gradient-to-r from-[#FF8217]/5 via-transparent to-transparent pointer-events-none" />
     </div>
   );
 }
@@ -377,8 +305,7 @@ export default function LandingPage() {
         className="min-h-screen bg-[#F7F7F9] text-[#000046] selection:bg-[#FF8217] selection:text-white"
         style={{ fontFamily: bodyFontFamily }}
       >
-      {/* ══════════════ FLOATING BANNER ══════════════ */}
-      <AnnouncementBanner />
+      {/* Banner supprimé */}
 
       {/* ══════════════ 1. NAVBAR ══════════════ */}
       <header
