@@ -112,7 +112,8 @@
   font-weight: 500;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #000046;
+  color: #FFFFFF;
+  text-shadow: 0 2px 16px rgba(0, 0, 70, 0.5);
   line-height: 1.4;
   opacity: 0;
 }
@@ -157,13 +158,13 @@
   font-family: 'Sailec', 'Inter', sans-serif;
   font-size: 10px;
   letter-spacing: 0.05em;
-  color: #000046;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .bCorpIcon {
   width: 44px;
   height: 44px;
-  border: 2px solid #000046;
+  border: 2px solid rgba(255, 255, 255, 0.6);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -171,7 +172,7 @@
   font-family: 'Moret', 'Georgia', serif;
   font-size: 22px;
   font-weight: 700;
-  color: #000046;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 /* ─── Flash ─── */
