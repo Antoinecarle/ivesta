@@ -57,11 +57,16 @@ export default function Devis() {
           <div className="flex items-center gap-4 mb-8">
             <div className="w-14 h-14 bg-orange flex items-center justify-center font-display font-bold text-navy text-2xl">iV</div>
             <div>
-              <h1 className="font-display text-4xl font-bold">Proposition Technique & Tarifaire</h1>
+              <h1 className="font-display text-4xl font-bold">Premiere Approche Technique & Tarifaire</h1>
               <p className="text-white/60 mt-1 text-lg">Plateforme SaaS iVesta Family Office</p>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-6 mt-10">
+          <div className="bg-orange/15 border border-orange/30 px-6 py-4 mt-8">
+            <p className="text-white/90 text-[15px] leading-relaxed">
+              <strong className="text-orange">Note :</strong> Ce document constitue une <strong>premiere estimation indicative</strong> de notre proposition. Les contenus, phases et tarifs presentes sont une base de discussion et seront affines ensemble si vous souhaitez aller plus loin.
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-6 mt-8">
             <div className="bg-white/10 p-5">
               <p className="text-3xl font-display font-bold text-orange">108 - 185k EUR</p>
               <p className="text-sm text-white/60 mt-1">Budget total estime</p>
@@ -145,7 +150,10 @@ export default function Devis() {
       {/* Footer */}
       <footer className="bg-navy text-white py-10 text-center">
         <p className="text-white/50 text-sm">
-          Devis confidentiel prepare par Alfred Builders pour Ivesta Family Office &mdash; Mars 2026
+          Premiere estimation indicative preparee par Alfred Builders pour Ivesta Family Office &mdash; Mars 2026
+        </p>
+        <p className="text-white/40 text-xs mt-2">
+          Ce document est une base de travail. Les phases, delais et tarifs seront affines selon vos priorites.
         </p>
         <p className="text-white/30 text-xs mt-2">
           Contact : adrien@checkeasy.co &bull; hello@latraverse.studio
